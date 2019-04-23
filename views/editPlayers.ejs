@@ -1,0 +1,51 @@
+<% include partials/header %>
+
+<div class="container">
+<br>
+<h4>Edit current players in Round <%= match.round %>:</h4>
+
+  <table style="max-width:60%; text-align:center" class="table table-striped">
+    <thead class="thead-light">
+      <tr >
+        <th scope="col"><h4>Player</h4></th>
+        <th scope="col"><h4>Action</h4></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% match.players.forEach(function(player){ %>
+        <tr>
+            <td ><h4><%= player %></h4></td>
+            <td>
+            <form action="/deletePlayers/<%=match._id %>?_method=PUT" method="POST">
+              <div class="justify-content-center">
+                <button type="submit" class="form-control btn btn-outline-danger col-3" name="deletedPlayer" value="<%= player %>">Remove</button>
+              </div>
+            </form>
+            <% }); %>
+        </tr>
+      </tbody>
+    </table>
+
+<br>
+<% if (match.players.length < 4){ %>
+  <h5> Click to add more players</h5>
+    <form action="/addPlayers" method="POST">
+      <div class="form-group">
+      <button type="submit" class="form-control btn btn-outline-success col-2 mb-2" name="playerAddRound" value="<%= match.round %>">Add Players</button>
+      </div>
+    </form>
+    <br>
+        <h5>Otherwise return to Administrator or Home page:</h5>
+        <div class="form-inline col-3">
+            <a style="margin-right: 10px" href="/admin" class=" form-control btn btn-outline-primary mb-2">Administrator</a>
+            <a href="/season_prac" class="form-control btn btn-outline-primary mb-2">Home</a>
+        </div>
+
+  
+<% } %>
+
+</div>
+
+
+<% include partials/footer %>

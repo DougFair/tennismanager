@@ -1,0 +1,52 @@
+body{
+	background-color: #E3E5DB;
+}
+
+table {
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+.jumbotron{
+	background-image: url('/public/images/tennisCourt.jpg');
+	background-size: cover;
+	background-repeat: no-repeat;
+	color: white;
+} 
+
+.inputArray {
+	display:inline;
+}
+
+#thumbButton {
+	border: 0;
+	background-color:transparent;
+}
+
+.welcomeBox {
+	color: grey;
+	margin: 0 auto;
+	border: 1px gray solid;
+	border-radius:20px;
+	padding: 10px;
+	max-width:70%;
+	background-color: white
+}
+
+.notes {
+	text-align: center;
+}
+
+#notice {
+	text-align: left;
+}
+
+
+/*.btn-outline-primary {*/
+/*	color: #99B9C6*/
+/*}*/
+
+.btn-outline-primary {
+	outline-color: #99B9C6
+}

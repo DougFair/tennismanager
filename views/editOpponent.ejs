@@ -1,0 +1,31 @@
+<% include partials/header %>
+
+<div class="container">
+<br>
+<h4>To edit a team you must first delete it.</h4>
+<h4>You will then be directed back to the "Season Creation" page.</h4>
+
+  <table style="max-width:60%; text-align:center" class="table table-striped">
+    <thead class="thead-light">
+      <tr >
+        <th scope="col"><h4>Team</h4></th>
+        <th scope="col"><h4>Action</h4></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <%opponents.forEach(function(opponent){ %>
+        <tr>
+            <td ><h5><%= opponent.team %></h5></td>
+            <td>
+            <form action="/editOpponent/<%= opponent._id %>?_method=DELETE" method="POST">
+              <div class="justify-content-center">
+                <button type="submit" class="form-control btn btn-outline-danger col-4">Delete</button>
+              </div>
+            </form>
+            <% }); %>
+        </tr>
+      </tbody>
+    </table>
+</div> 
+<% include partials/footer %>

@@ -1,0 +1,48 @@
+<% include partials/header %>
+
+<div class="container">
+<h4>Select the year and season you would like to view</h4>
+
+<table class="table table-striped" style="width:60%">
+    <thead class="thead-light">
+        <tr>
+          <th>Year</th>
+          <th>Season</th>
+          <th>View</th>
+        <% if (currentUser.isAdmin) { %>
+            <th>Edit Details</th>
+            <th>Remove</th>
+        <% } %>
+        </tr>
+    </thead>
+    <tbody>
+        <% archivedSeasons.forEach(function(season){ %>
+        <tr>
+            <th scope="row"><%= season.year %></td>
+            <td><%= season.season %></td>
+            <td>
+            <form action="/archiveDisplay/<%= season._id %>" method="POST">
+                <input type="submit" class="btn btn-outline-success" value="View">
+            </form>
+            </td>
+            <% if (currentUser.isAdmin) { %>
+            <td>
+                <form action="/archiveDisplayEdit/<%= season._id %>" method="GET">
+                <input type="submit" class="btn btn-outline-warning" value="Edit"> 
+                </form>
+            </td>
+            <td>
+                <form action="/archiveDelete/<%= season._id %>?_method=DELETE" method="POST">
+                <input type="submit" class="btn btn-outline-danger" value="Delete"> 
+                </form>
+            </td>
+
+            <%  } %>
+        </tr>
+        <% }); %>
+    </tbody>
+</table>
+ 
+
+</div>
+<% include partials/footer %>

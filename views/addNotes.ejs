@@ -1,0 +1,16 @@
+<% include partials/header %>
+<div class="container">
+
+<form action="/notes" method="POST">
+
+    <div class="form-group">
+      <textarea class="form-control" rows="3" cols="50" id="text" name="note[text]" placeholder="Type note here"></textarea>
+    </div>
+        <div class="form-group">
+        <input type="hidden" name="note[author]" value="<%= currentUser.username %>">
+        <input type="submit" value="Submit" class="form-control btn btn-success col-2">
+        </div>
+</form>
+
+</div>
+<% include partials/footer %>

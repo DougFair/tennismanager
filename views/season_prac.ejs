@@ -1,0 +1,188 @@
+<% include partials/header %>
+
+<div class="container">
+<div class="welcomeBox">
+    <h2 style="color:GreenYellow"><center>Welcome to the Home Page <%= currentUser.username %>!</center></h2>
+<% var today = moment(); %>
+<% var seasonDates = []; %>
+<% var dateDiff = []; %>
+<% matches.forEach(function(match){ %>
+ <% var difference = moment(match.date).diff(today,"hours") %>
+       <% if (difference > 0) { %> 
+            <% dateDiff.push(difference) %>
+            <% seasonDates.push(match.date) %>
+    <% } %>
+<% }); %>
+
+<% var nextDateIndex = dateDiff.indexOf(Math.min.apply(null, dateDiff)) %>
+<% var nextDate = seasonDates[nextDateIndex] %>
+
+<% matches.forEach(function(match){ %>
+    <% if (match.date == nextDate) { %>
+    <% var home = match.homeTeam %>
+    <% var away = match.awayTeam %>
+        <% if (home == "Montmorency") { %>
+            <h4><center>Our next match is at home versus <%= away %> on <%= moment(nextDate).format("DD-MM-YYYY") %>.</center></h4> 
+            <% } else { %>
+            <h4><center>Our next match is away versus <%= home %> on <%= moment(nextDate).format("DD-MM-YYYY") %>.</center></h4> 
+        <% } %>
+    <% } %>
+<% }) %>
+
+<% opponents.forEach(function(opponent){ %>
+<% if (opponent.position) { %>
+    <% if (opponent.team == "Montmorency") { %>
+        <h4><center>We are currently in <%= ordinal(opponent.position) %> place.</center></h4>
+        <h4><center>To see full ladder click:</center> </h4>
+            <form action="/ladder" method="GET">
+                <center><input type="submit" class="btn btn-primary" value="Ladder"></center>
+            </form>
+        <% } %>
+     <% } %>
+    <% }); %>
+
+<% if (!matches.length) { %>
+    <h4><center>There are currently no match details.</center></h4>
+    <% if (currentUser.isAdmin) { %>
+        <h4><center>Go to the administrators page and "Create" a new season.</center></h4>
+    <% } else { %>
+        <h4><center>Your team captain will set a new season up shortly.</center></h4>
+        <h4><center>You can view photos or details past seasons by clicking on links above.</center></h4>
+    <% } %>
+<% } %>
+
+</div>
+
+
+<div class="notes">
+    <form action="/notes" method="GET">
+        <div class="form-group mt-1 mb-1">
+            <input type="submit" class="col-2 form-control btn btn-outline-primary btn-sm" value="Add a comment or note">
+        </div>
+    </form>
+    
+    <% notes.forEach(function(notice){ %>
+        <div class="form-inline mt-2">
+            <p id="notice"><strong><%=notice.author%></strong>: <%= notice.text %> <span style="color:gray">Posted: <%=moment(notice.dateUpdated).format("DD-MM-YYYY")%></span><span>
+        <% if (notice.author === currentUser.username || currentUser.isAdmin) { %>
+        <form action="/notes/<%=notice._id%>?_method=DELETE" method="POST">
+            <input type="submit" class="btn btn-outline-danger btn-sm align-middle" style="margin-left: 5px" value="Delete">
+        </span></p>
+        </form>
+        <% } %>
+        </div>
+        <% }); %>
+</div>
+<hr>
+
+<% if (!season.length) { %>
+    <h4>The season will be updated shortly!</h4>
+<% } else { %>
+<caption style="caption-side: top"><h4>Round-by-round details: Section <%= season[0].section %> <%= season[0].season %> season, <%= season[0].year %>.</h4></caption>
+<% } %>
+
+<table class="table table-striped">
+
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Round</th>
+                <th scope="col">Date</th>
+                <th scope="col">Home</th>
+                <th scope="col">Away</th>
+                <th scope="col" style="white-space: nowrap">Can Play</th>
+                <th scope="col">Unavailable</th>
+                <th scope="col">Availability</th>
+                <th scope="col">Players</th>
+                <th scope="col">Score</th>
+                <th scope="col">Comments</th>
+             </tr>
+        </thead>
+        <tbody>
+            <% var finalMatches = [] %>
+            <% matches.forEach(function(match){ %>
+                  <% var re = /^\D/ %>
+                  <% var target = match.round %>
+                 <% if (re.test(target)) { %>
+                  <% finalMatches.push(match) %>
+              <% } %>
+            <% }) %>
+            
+            <% for (var i = 1; i <= matches.length; i++) { %>
+            
+            <% matches.forEach(function(match){ %>
+            <tr>
+                <% if (match.round == i) { %>
+                <th scope="row"><%= match.round %></th>
+                <td style="white-space: nowrap"><%= moment(match.date).format("DD-MM-YYYY") %></td>
+                <td><%= match.homeTeam %></td>
+                <td><%= match.awayTeam %></td>
+                <td><%= match.canPlay %></td>
+                <td><%= match.unavailable %></td>
+                <td>
+                <form action="/canPlay/<%= match._id %>?_method=PUT" method="POST">
+                    <div class="form-inline">
+                       <button id="thumbButton" style="color:green" name="match[canPlay]"  value="<%= currentUser.username %>"><i class="fas fa-thumbs-up"></i></i></button>
+                </form>
+                <form action="/unavailable/<%= match._id %>?_method=PUT" method="POST">
+                       <button id="thumbButton" style="color:red" name="match[unavailable]" value="<%= currentUser.username %>"><i class="fas fa-thumbs-down"></i></button>
+                </form>
+                <form action="/removeAvail/<%= match._id %>?_method=PUT" method="POST">
+                       <button id="thumbButton" style="color:yellow" name="match[removeName]" value="<%= currentUser.username %>"><i class="far fa-trash-alt"></i></button>
+                    </div>
+                </form>
+                </td>
+                
+                </td>
+                <td style="white-space: nowrap"><%= match.players.join("  ") %></td>
+                <td style="white-space: nowrap"><%= match.score %></td>
+                <td>
+                    <form action="/comments/<%=match._id %>" method="GET">
+                        <input type="submit" class="btn btn-outline-primary" value="View / Add">
+                    </form>
+                </td>
+            </tr>
+                    <% } %>
+                <% }); %>
+            <% } %>
+
+            
+            <% finalMatches.forEach(function(match){ %>
+              <tr>
+                  <th scope="row"><%= match.round %></th>
+                  <td style="white-space: nowrap"><%= moment(match.date).format("DD-MM-YYYY") %></td>
+                  <td><%= match.homeTeam %></td>
+                  <td><%= match.awayTeam %></td>
+                <td><%= match.canPlay %></td>
+                <td><%= match.unavailable %></td>
+                <td>
+                <form action="/canPlay/<%= match._id %>?_method=PUT" method="POST">
+                    <div class="form-inline">
+                       <button id="thumbButton" style="color:green" name="match[canPlay]"  value="<%= currentUser.username %>"><i class="fas fa-thumbs-up"></i></i></button>
+                </form>
+                <form action="/unavailable/<%= match._id %>?_method=PUT" method="POST">
+                       <button id="thumbButton" style="color:red" name="match[unavailable]" value="<%= currentUser.username %>"><i class="fas fa-thumbs-down"></i></button>
+                </form>
+                    <form action="/removeAvail/<%= match._id %>?_method=PUT" method="POST">
+                       <button id="thumbButton" style="color:yellow" name="match[removeName]" value="<%= currentUser.username %>"><i class="far fa-trash-alt"></i></button>
+                    </div>
+                </form>
+                </td>
+                <td style="white-space: nowrap"><%= match.players.join("  ") %></td>
+                <td style="white-space: nowrap"><%= match.score %></td>
+                <td>
+                    <form action="/comments/<%=match._id %>" method="GET">
+                        <input type="submit" class="btn btn-outline-primary" value="View / Add">
+                    </form>
+                </td>
+            <% }) %>
+        </tr>
+            
+            
+            
+            
+            
+        </tbody>
+</table>
+
+<% include partials/footer%>
+

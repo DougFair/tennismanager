@@ -1,0 +1,66 @@
+<% include partials/header/ %>
+
+<div class="container">
+<h3>Update the ladder below (one team at a time).</h3>
+
+<table class="table table-striped" style="width:80%">
+   <thead class="thead-light">
+    <tr>
+      <th scope="col">Team</th>
+      <th scope="col">New Position</th>
+      <th scope="col">New Points</th>
+      <th scope="col">New %</th>
+    <th></th>
+    </tr>
+    </thead>
+    
+    <tbody>
+        <% opponents.forEach(function(opponent){ %>
+        <tr>
+        <td scope="row"><%= opponent.team %></td>
+            <% if (opponent.updated) { %>
+                <td><%=opponent.position %></td>
+                <td><%=opponent.points %></td>
+                <td><%=opponent.percentage %></td>
+            <form action="/ladderedit/<%= opponent._id%>?_method=PUT" method="POST">
+                <td><button type="submit" class="btn btn-danger btn-sm" name="opponent[updated]" value="false">Edit</button></td>
+            </form>
+            <% } else { %>
+                <form action="/ladderedit/<%= opponent._id%>?_method=PUT" method="POST">
+                <td>
+                    <select class="form-control" placeholder="Position" name="opponent[position]">
+                    <option>Position</option>
+                    <% for (var i=1; i <= opponents.length; i++){ %>
+                    <option><%= i %></option>
+                    <% }; %>
+                    </select>
+                </td>
+                <td ><input type="number" class="form-control" placeholder="Points" name="opponent[points]" required ></td>
+                <td><input type="number" class="form-control" placeholder="%" name="opponent[percentage]" required></td>
+                <input type="hidden" name="opponent[submitted]" value="false">
+                <td><button type="submit" class="btn btn-success btn-md" name="opponent[updated]" value="true">Update</button></td>
+            </div>
+            </form>
+            <% } %>
+            </tr>
+            <% }); %>
+        </tbody>
+</table>
+
+    <% var count = 0 %>
+    <% opponents.forEach(function(opponent){ %>
+        <%if (opponent.updated){ %>
+            <% count += 1 %>
+        <% }; %>
+        <% if (count === opponents.length) { %>
+ <h6>Please check each positon is only occupied by a single team.</h6>
+ <h6>If there is an error, please edit. Otherwise Submit final ladder.</h6>
+            <form action="/laddereditfinal?_method=PUT" method="POST">
+            <button type="submit" class="btn btn-success">Submit</button>
+            </form>
+        <% } %>
+    <% }); %>
+
+</div>
+
+<% include partials/footer %>

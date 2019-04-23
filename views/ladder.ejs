@@ -1,0 +1,63 @@
+<% include partials/header %>
+
+<div class="container">
+
+<% var posArr = [] %>
+<% var duplicates = [] %>
+    <% opponents.forEach(function(opponent){ %>
+           <% posArr.push(opponent.position) %>
+            <% sortedArr = posArr.slice().sort() %>
+            <% for (var i=0; i < sortedArr.length-1; i++){ %>
+            <% if (sortedArr[i] == sortedArr[i+1] && duplicates.indexOf(sortedArr[i]) == -1){ %>
+                   <% duplicates.push(sortedArr[i]) %>
+                <% }; %>
+            <% } %> 
+     <% }); %>           
+
+    <% if (duplicates.length) { %>
+      <h4>You have inputed more than one team at position(s): <%= duplicates.toString()%>.</h4>
+      <h4>Click  to re-input the correct values:</h4>
+      <form action="/laddercorrect?_method=PUT" method="POST">
+      <button type="submit" class="btn btn-success">Update Team Positions</button> 
+      </form>
+    <% } else { %>
+    <%if (!opponents[0].dateUpdated) { %>
+    <h4>There is currently no ladder. Click to return to home page</h4>
+    <button href="./season_prac" class="btn btn-warning">Home</button> 
+    <% } else { %>
+    <h4 style="color:SteelBlue">Ladder for  <%= season[0].season %> season, <%= season[0].year %>: Section <%= season[0].section %>.</h4>
+    <h6>Updated on <%= moment(opponents[0].dateUpdated).format("DD-MM-YYYY") %></h6>
+      <table class="table table-striped" style="width:60%">
+            <thead class="thead-light">
+                <tr>
+                  <th>Position</th>
+                  <th>Team</th>
+                  <th>Points</th>
+                  <th>%</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (var i = 1; i <= opponents.length; i++){ %>
+                <% opponents.forEach(function(opponent){ %>
+                    <% if (opponent.position === i){ %>
+                <tr>
+                    <% if (opponent.team === "Montmorency") { %>
+                    <td style="font-weight:bold"><%= opponent.position %></td>
+                    <td style="font-weight:bold"><%= opponent.team %></td>
+                    <td style="font-weight:bold"><%= opponent.points %></td>
+                    <td style="font-weight:bold"><%= opponent.percentage %></td>
+                    <% } else { %>
+                    <td><%= opponent.position %></td>
+                    <td><%= opponent.team %></td>
+                    <td><%= opponent.points %></td>
+                    <td><%= opponent.percentage %></td>
+                    <% } %>
+                </tr>
+                <% } %>
+            <% }); %>
+        <% } %>
+    <% } %>
+<% } %>
+    </tbody>
+</table>
+</div>

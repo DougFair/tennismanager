@@ -1,0 +1,67 @@
+<% include partials/header %>
+
+<div class="container">
+
+<h4><strong>Which round for <%= allMatches.season %> season of <%= allMatches.year %> would you like to edit?</strong></h4>
+    <table class="table table-striped" style="text-align:center">
+          <caption style="caption-side: top; color: SteelBlue"><h4>Round-by-round details</h4></caption>
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Round</th>
+                <th scope="col">Date</th>
+                <th scope="col">Home</th>
+                <th scope="col">Away</th>
+                <th scope="col">Players</th>
+                <th scope="col">Score</th>
+                <th scope="col">Edit</th>
+              </tr>
+            </thead>
+            <tbody>
+            <% var finalMatches = [] %>
+            <% allMatches.details.forEach(function(match){ %>
+              <% var re = /^\D/ %>
+              <% var target = match.round %>
+                  <% if (re.test(target)) { %>
+                  <% finalMatches.push(match) %>
+              <% } %>
+            <% }) %>
+            
+            <% for (var i = 1; i <= allMatches.details.length; i++) { %>
+              <% allMatches.details.forEach(function(match){ %>
+                <tr>
+                    <% if (match.round == i) { %>
+                        <th scope="row"><%= match.round %></th>
+                        <td style="white-space: nowrap"><%= moment(match.date).format("DD-MM-YYYY") %></td>
+                        <td><%= match.homeTeam %></td>
+                        <td><%= match.awayTeam %></td>
+                        <td><%= match.players.join("  ") %></td>
+                        <td><%= match.score %></td>
+                        <td>
+                            <form action="/archiveEditForm/<%=allMatches._id%>" method="POST">
+                              <button type="submit" class="btn btn-outline-warning" name="round" value="<%=match.round%>">Edit</button>
+                            </form>
+                        </td>
+                      <% } %>
+                    <% });%>
+                    <% } %>
+              </tr>
+             <% finalMatches.forEach(function(match){ %>
+              <tr>
+                  <th scope="row"><%= match.round %></th>
+                  <td style="white-space: nowrap"><%= moment(match.date).format("DD-MM-YYYY") %></td>
+                  <td><%= match.homeTeam %></td>
+                  <td><%= match.awayTeam %></td>
+                  <td><%= match.players.join("  ") %></td>
+                  <td><%= match.score %></td>
+                  <td>
+                    <form action="/archiveEditForm/<%=allMatches._id%>" method="POST">
+                      <button type="submit" class="btn btn-outline-danger" name="round" value="<%=match.round%>">Edit</button>
+                    </form>
+                  </td>
+                <% }); %>
+              </tr>              
+            </tbody>
+      </table>
+</div>
+
+<% include partials/footer %>

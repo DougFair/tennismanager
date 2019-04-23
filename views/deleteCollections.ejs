@@ -1,0 +1,15 @@
+<% include partials/header %>
+
+<div class="container">
+<h5>Your season has now been archived</h5>
+<h5>To complete this proces, you must now delete the current season details.</h5>
+<br>
+    <form action="/deleteCollections" method="POST">
+        <div class="form-group">
+            <input type="submit" class="btn btn-outline-warning form-control col-4" value="Delete Season" >
+        </div>       
+    </form>
+</div>
+
+
+<% include partials/footer %>

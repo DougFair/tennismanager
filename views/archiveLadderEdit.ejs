@@ -1,0 +1,36 @@
+<% include partials/header %>
+<div class="container">
+    
+
+<p>To edit a ladder psoition you first must delete them by clicking on the delete button below.</p>
+<p>You will then be re-directed to the Archive input page.</p>
+
+
+ <table class="table table-striped" style="width:40%; text-align:center">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">Position</th>
+      <th scope="col">Team</th>
+    <th scope="col">Remove</th>
+    </tr>
+    </thead>
+    <tbody>
+        <% allMatches.ladder.forEach(function(rung){ %>
+        <tr>
+            <th><%= rung.position %></th>
+            <td><%= rung.team %></td>
+            <td>
+                <form action="/archiveLadderEdit/<%=allMatches._id%>?_method=PUT" method="POST">
+                    <input type="hidden" name="position" value="<%= rung.position %>">
+                    <button type="submit" class="btn btn-outline-danger" name="team" value="<%= rung.team %>">Delete</button>
+                </form>
+            </td>
+            <% }); %>
+        </tr>
+
+    </tbody>
+</table>
+
+
+<% include partials/footer %>
+             

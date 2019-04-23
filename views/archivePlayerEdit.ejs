@@ -1,0 +1,33 @@
+<% include partials/header %>
+<div class="container">
+    
+
+<p>To edit a player you first must delete them by clicking on the delete button below.</p>
+<p>You will then be re-directed to the Archive input page.</p>
+
+
+ <table class="table table-striped" style="width:40%; text-align:center">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">Player</th>
+      <th scope="col">Remove</th>
+    </tr>
+    </thead>
+    <tbody>
+        <% allMatches.teamMembers.forEach(function(teamMember){ %>
+        <tr>
+            <th><%= teamMember %></th>
+            <td>
+                <form action="/archivePlayerEdit/<%=allMatches._id%>?_method=PUT" method="POST">
+                    <button type="submit" class="btn btn-outline-danger" name="player" value="<%= teamMember %>">Delete</button>
+                </form>
+            </td>
+            <% }); %>
+        </tr>
+
+    </tbody>
+</table>
+
+
+<% include partials/footer %>
+             

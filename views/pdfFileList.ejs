@@ -1,0 +1,30 @@
+<% include partials/header %>
+
+<div class="container">
+
+<table class="table table-striped" style="max-width:50%" >
+    <thead class="thead-light">
+        <tr>    
+            <th>File to download</th>
+            <% if (currentUser.isAdmin) { %>
+            <th>Remove File</th>
+            <% } %>
+        </tr>
+    </thead>
+    <tbody>
+        <% files.forEach(function(file){%>
+            <tr>
+                <td><a href=<%= file.pdfPath %> target="_blank"><%= file.fileName %></a></td>
+                
+            <% if (currentUser.isAdmin) { %>
+                <td>
+                    <form action="/getPDF/<%= file._id %>?_method=DELETE" method="POST" style="display:inline">
+                        <input type="submit" class="btn btn-outline-danger btn-sm" value="Delete">
+                    </form>
+                </td>
+                <% } %>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>
+<% include partials/footer %>

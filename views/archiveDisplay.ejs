@@ -1,0 +1,105 @@
+<% include partials/header %>
+
+<div class="container">
+
+<h3 style="color:SteelBlue"><strong>Details for the <%= allMatches.season %> season of <%= allMatches.year %>: Section <%=allMatches.section %>. </strong></h3>
+<div class="form-inline">
+  <div class="form-group" >
+    <form action="/pastSeasonsArchive" method="GET">
+    <input type="submit" class="btn btn-outline-primary mr-1" value="View another season">
+    </form>
+  </div>
+
+  <div class="form-group">
+  <form action="/season_prac" method="GET">
+    <input type="submit" class="btn btn-outline-success" value="Home">
+  </form>
+  </div>
+</div>
+
+<hr>
+
+<h4 style="color: SteelBlue"> Players for this season were:</h4>
+
+<h5><%= allMatches.teamMembers.join(" ") %></h5>
+<hr>
+  <table class="table table-striped" style="width:40%; text-align:center">
+        <caption style="color: SteelBlue; caption-side: top"><h4>Final Ladder</h4></caption>
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Position</th>
+              <th scope="col">Teams</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i = 1; i <= allMatches.ladder.length; i++) { %>
+            <% allMatches.ladder.forEach(function(selectedTeam){ %>
+                <% if (selectedTeam.position == i) { %>
+            <tr>
+              <th scope="row"><%= selectedTeam.position %></td>
+              <% if (selectedTeam.team === "Montmorency") { %>
+              <td style="font-weight:bold"><%= selectedTeam.team %></td>
+              <% } else { %>
+              <td><%= selectedTeam.team %></td>
+              <% } %>
+              <% } %>
+            </tr>
+      <% }); %>
+    <% }; %>
+  </tbody>
+    </table>
+<hr>
+    <table class="table table-striped" style="text-align:center">
+          <caption style="caption-side: top; color: SteelBlue"><h4>Round-by-round details</h4></caption>
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Round</th>
+                <th scope="col">Date</th>
+                <th scope="col">Home</th>
+                <th scope="col">Away</th>
+                <th scope="col">Players</th>
+                <th scope="col">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+            <% var finalMatches = [] %>
+            <% allMatches.details.forEach(function(match){ %>
+                  <% var re = /^\D/ %>
+                  <% var target = match.round %>
+                 <% if (re.test(target)) { %>
+                  <% finalMatches.push(match) %>
+              <% } %>
+            <% }) %>
+            
+            <% for (var i = 1; i <= allMatches.details.length; i++) { %>
+              <% allMatches.details.forEach(function(match){ %>
+                <tr>
+                    <% if (match.round == i) { %>
+                        <th scope="row"><%= match.round %></th>
+                        <td style="white-space: nowrap"><%= moment(match.date).format("DD-MM-YYYY") %></td>
+                        <td><%= match.homeTeam %></td>
+                        <td><%= match.awayTeam %></td>
+                        <td><%= match.players.join("  ") %></td>
+                        <td><%= match.score %></td>
+
+                      <% } %>
+                    <% });%>
+                  <% } %>
+                </tr>
+                <% if (finalMatches.length){ %>
+                <% finalMatches.forEach(function(match){ %>
+              <tr>
+                  <th scope="row"><%= match.round %></th>
+                  <td style="white-space: nowrap"><%= moment(match.date).format("DD-MM-YYYY") %></td>
+                  <td><%= match.homeTeam %></td>
+                  <td><%= match.awayTeam %></td>
+                  <td><%= match.players.join("  ") %></td>
+                  <td><%= match.score %></td>
+                <% }); %>
+              </tr>
+            <% }; %>
+            </tbody>
+      </table>
+
+
+<% include partials/footer %>

@@ -1,0 +1,31 @@
+<% include partials/header %>
+<div class="container">
+
+
+<h5>Comments for Round <%= match.round %></h5>
+<br>
+<form action="/addComments/<%= match._id %>" method="GET">
+    <div class="form-inline">
+    <input type="submit" class="form-control btn btn-outline-primary mr-1" value="Add a new comment">
+    <a href="/season_prac" class="form-control btn btn-outline-success col-2">Home</a>
+    </div>
+</form>
+
+
+<br>
+
+<% match.comments.reverse().forEach(function(comment){ %>
+  <p style="margin-bottom: 2px"><strong><%= comment.author.username %></strong> commented on <%= moment(comment.date).format("DD-MM-YYYY") %>:</p>
+  <p style="display:inline"><%= comment.text %></p>
+  <% if (comment.author.id.equals(currentUser._id) || currentUser.isAdmin) { %>
+  <form action="/commentDelete/<%= comment._id %>?_method=DELETE" method="POST" style="display:inline">
+    <input type="submit" class="btn btn-outline-danger btn-sm" value="Delete">
+  </form>
+  <% } %>
+  <hr>
+<% }); %>
+
+
+</div>
+
+<% include partials/footer %>

@@ -1,0 +1,33 @@
+<% include partials/header %>
+
+<div class="container">
+<br>
+<h4>To edit a player you must first delete them.</h4>
+<h4>You will then be directed back to the "Season Creation" page.</h4>
+<% var playerArray = season[0].teamMembers %>
+<% var playerId = season[0]._id %>
+
+  <table style="max-width:60%; text-align:center" class="table table-striped">
+    <thead class="thead-light">
+      <tr >
+        <th scope="col"><h4>Team</h4></th>
+        <th scope="col"><h4>Action</h4></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <%playerArray.forEach(function(player){ %>
+        <tr>
+            <td ><h5><%= player %></h5></td>
+            <td>
+            <form action="/teamMembersEdit/<%= playerId %>?_method=PUT" method="POST">
+              <div class="justify-content-center">
+                <button type="submit" class="form-control btn btn-outline-danger col-2" name="player" value="<%= player %>">Delete</button>
+              </div>
+            </form>
+            <% }); %>
+        </tr>
+      </tbody>
+    </table>
+    
+<% include partials/footer %>

@@ -1,0 +1,61 @@
+<% include partials/header %>
+<div class="container">
+
+
+<h3>Edit any round - (one round at a time).</h3>
+
+<table class="table table-striped" style="width:80%">
+   <thead class="thead-light">
+    <tr>
+      <th scope="col">Round</th>
+      <th scope="col" style="white-space: nowrap">Current date</th>
+      <th scope="col">New Date</th>
+      <th scope="col">Home Team</th>
+      <th scope="col">Away Team</th>
+
+    </tr>
+    </thead>
+    
+    <tbody>
+        <% matches.forEach(function(match){ %>
+        <tr>
+        <% if (match.updated) { %>
+                <td><%=match.round %></td>
+                <td><%=moment(match.date).format("DD-MM-YYYY")%></td>
+                <td><%=moment(match.date).format("DD-MM-YYYY") %></td>
+                <td><%=match.homeTeam %></td>
+                <td><%=match.awayTeam %></td>
+            <!--<form action="/matchesEdit/<%= match._id%>?_method=PUT" method="POST">-->
+            <!--<td><button type="submit" class="btn btn-danger btn-sm" name="match[updated]" value="false">Edit</button></td>-->
+            <!--</form>-->
+            <% } else { %>
+                <form action="/matchesEdit/<%= match._id%>?_method=PUT" method="POST">
+                <td><input type="text" class="form-control" value="<%= match.round %>" name="match[round]" required ></td>
+                <td><%= moment(match.date).format("DD-MM-YYYY") %></td>
+                <td><input type="date" class="form-control" value="<%= moment(match.date).format("DD-MM-YYYY") %>" name="match[date]" required ></td>
+                <td><input type="text" class="form-control" value="<%= match.homeTeam %>" name="match[homeTeam]" required></td>
+                <td><input type="text" class="form-control" value="<%= match.awayTeam %>" name="match[awayTeam]" required></td>
+                <td><button type="submit" class="btn btn-success btn-md" name="match[updated]" value="true">Update</button></td>
+                </form>
+                <form action="/matchesEdit/<%= match._id%>?_method=DELETE" method="POST">
+                <td><button type="submit" class="btn btn-danger btn-md" name="match[updated]" value="true">Delete</button></td>
+                </form>
+            </div>
+
+            <% } %>
+            </tr>
+            <% }); %>
+        </tbody>
+</table>
+<h5 >Once you have edited all the rounds you need to, click the button below.</h5>
+<h5>If you have made further errors just return here from the Administrator page.</h5>
+
+<form action="/matchesEditFinal?_method=PUT" method="POST" >
+
+<div class="form-group col-3">
+    <input type ="submit" class=" form-control btn btn-primary" value="Editing Complete">
+</div>
+
+
+</form>
+</div>

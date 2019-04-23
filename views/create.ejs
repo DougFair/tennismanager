@@ -1,0 +1,124 @@
+<% include partials/header %>
+<div class="container">
+
+<% var edited %>
+<% var seasonID %>
+<% seasonPlayer.forEach(function(season){ %>
+<% seasonID = season._id %>
+<% edited = season.edited %>
+<% }); %> 
+
+    
+    <h4>Add players for this season</h4>
+
+        <form action="/teamMembers/<%= seasonID %>?_method=PUT" method="POST">          
+        <div class="form-inline">
+        <div class="form-group mx-sm-1 mb-1">
+            <input type="text" class="form-control" placeholder="Player Name" name="player">
+        </div>
+        <button type="submit" class="btn btn-primary mb-1">Add Player</button>
+        </div>
+    </form>
+
+
+
+    <p style="margin-bottom: 1px" >Team is:</p>
+    <% seasonPlayer.forEach(function(season){ %>
+        <% if (season.teamMembers){ %>
+            <% season.teamMembers.forEach(function(teamMember){ %>
+            <p class="inputArray"><%= teamMember %><span>, </span></p>
+            <% }); %>
+        <% } %>
+    <% }); %>
+    
+    <br><br>
+    <p>If you wish to edit a player, you first must delete them. Click here:</p> 
+    <form action="/teamMemberEdit" method="GET">
+        <input type="submit" class="btn btn-outline-danger" value="Edit">
+    </form>
+    
+    <br><hr><br>
+
+<% if (!edited) { %>    
+    <h4>Add teams competing this season</h4>
+    <form action="postOpponent" method="POST">
+        <div class="form-inline">
+        <div class="form-group mx-sm-1 mb-1">
+        <input type="text" class="form-control" placeholder="Team Name" name="opponent[team]">
+        </div>
+        <button type="submit" class="btn btn-primary mb-1">Add Team</button>
+        </div>
+    </form>
+
+     <div>  
+        <p style="margin-bottom: 1px" >Teams added:</p>
+        <% opponents.forEach(function(opponent){ %>
+        <p class="inputArray"><%= opponent.team %><span>, </span></p>
+        <% }); %>
+    </div>    
+<% }; %>
+    <br>
+     <p>If you wish to edit a team, you first must delete them. Click here:</p>
+    <form action="editOpponent" method="GET">
+        <button type="submit" class="btn btn-outline-danger btn-sm mb-1">Edit Team</button>
+    </form>
+
+    <br><hr><br>
+
+<% if (!edited) { %>    
+    <h4>Add details of each round this season</h4>
+<% } else { %>
+    <h4>Add details of the round</h3>
+<% } %>    
+    <form action="postCreate" method="POST">
+     <div class="form-inline">
+        <div class="form-group mb-1">
+            <input type="text" class="form-control" placeholder="Round" name="match[round]">
+        </div>
+        <div class="form-group mx-sm-1 mb-1">
+            <input type="date" class="form-control" placeholder="Date" name="match[date]">
+        </div>
+            <div class="form-group mx-sm-1 mb-1">
+                <% if (!edited) { %>   
+                <select class="form-control" placeholder="Home Team" name="match[homeTeam]">
+                <option hidden="">Select Home Team</option>
+                <% opponents.forEach(function(opponent){ %>
+                <option><%=opponent.team%></option>
+                <% }); %>
+                </select>
+                <% } else { %>
+                 <input type="text" class="form-control" placeholder="Home Team" name="match[homeTeam]">
+                <% } %>
+            </div>
+            <div class="form-group mx-sm-1 mb-1">
+                <% if (!edited) { %>
+                <select class="form-control" placeholder="Home Team" name="match[awayTeam]">
+                <option hidden="">Select Away Team</option>
+                <% opponents.forEach(function(opponent){ %>
+                <option><%=opponent.team%></option>
+                <% }); %>
+                </select>
+                <% } else { %>
+                <input type="text" class="form-control" placeholder="Home Team" name="match[awayTeam]">
+                <% } %>
+            </div>
+        <div class="form-group mx-sm-1 mb-1">
+            <input class="form-control" type="text" placeholder="Score" name="match[score]">
+        </div>
+            <input type="submit" class="btn btn-primary mb-1" value="Add Match">
+        </div>    
+    </form>
+    <br>
+
+<p>Matches in current season:<p>
+   <% matches.forEach(function(match){ %>
+   <p>Round: <%=match.round %>, Date: <%= moment(match.date).format("DD-MM-YYYY") %>, Home Team: <%=match.homeTeam %>, Away Team: <%= match.awayTeam %>.</p>
+ <% }); %>
+
+<% if (!edited) { %>    
+    <a href="/season_prac" class="btn btn-success mb-2">Season Input Complete</a>
+<% } else { %>
+    <a href="/season_prac" class="btn btn-success mb-2">Season Update Complete</a>   
+<% } %>
+    
+</div>
